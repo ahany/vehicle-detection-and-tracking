@@ -1,4 +1,4 @@
-#**Vehicle Detection and Tracking** 
+## Vehicle Detection and Tracking 
 
 This project is part of Udacity's [Self-Driving Car Engineer Nanodegree](https://www.udacity.com/course/self-driving-car-engineer-nanodegree--nd013). The goal of the project is to use computer vision and machine learning to detect vehicles in a video from a front-facing camera on a car. 
 
@@ -11,17 +11,22 @@ The steps of this project are the following:
 
 The steps mentioned above are covered in more details in the sections below.
 
-###**Data preparation**
+### Data preparation
 
 The datasets provided by Udacity are comprised of images taken from the [GTI vehicle image database](http://www.gti.ssr.upm.es/data/Vehicle_database.html), the [KITTI vision benchmark suite](http://www.cvlibs.net/datasets/kitti/), and examples extracted from the project video. 
 
 Random samples from the datasets are shown below:
 
-
+![enter image description here](https://github.com/ahany/vehicle-detection-and-tracking/blob/master/output_images/Dataset_samples.png)
 
 The datasets are composed of image data that was extracted from video. As subsequent images from a video are highly correlated, using a randomized train-test split will not be a good decision because images in the training set may be nearly identical to images in the test set.
 
 By exploring the image folders in the dataset, I noticed that the image files are numbered and if sorted naturally we can have multiple sequences on top of each other where each sequence represents images for the same car.
+
+Below is an example of how files are sorted naturally:
+
+![enter image description here](https://github.com/ahany/vehicle-detection-and-tracking/blob/master/output_images/Image_folder.png)
+
 
 The function `split_dataset()` in cell `Helper Functions` is used to perform a valid split into training and validation datasets. The function reads a list of files and naturally sorts the filenames first before splitting the files into two groups specified by the `split_pct` parameter which indicates the training-validation split percentage. In such case, we try to reduce the probability of having identical images in the training and test data set.
 
@@ -45,7 +50,7 @@ Then I call `split_dataset()` on both `vehicle_samples` and `nonvehicle_samples`
 
 The code for data exploration and loading the dataset is contained in the third and fifth code cells of the IPython notebook
 
-###**Histogram of Oriented Gradients (HOG)**  
+### Histogram of Oriented Gradients (HOG)
 
 #### Extracting HOG features from the training images
 
@@ -55,6 +60,7 @@ The code for this step is contained in the fourth code cell of the IPython noteb
 
 Below is an example of how the HOG features are different between a vehicle and a non-vehicle image when using the `YCrCb` color space and HOG parameters of `orientations=10`, `pixels_per_cell=(8, 8)` ,  `cells_per_block=(2, 2)` and `hog_channel=0`:
 
+![enter image description here](https://github.com/ahany/vehicle-detection-and-tracking/blob/master/output_images/Hog_features.png)
 
 #### Training the classifier
 
@@ -78,7 +84,7 @@ The above parameters yielded an accuracy of `0.9883` on the test dataset.
 
 The classifier was trained in code cells 6 and 7 of the IPython notebook.
 
-###**Sliding Window Search**
+### Sliding Window Search
 
 I used a sliding window approach to search each frame. To optimize the feature extraction, hog features are extracted only once and then sub-sampled to get all of the overlaying windows. Each window is defined by a scaling factor where a scale of 1 would result in a window that's 8 x 8 cells. Instead of resizing the window for different window sizes, the whole frame image is scaled according the window scaling factor and and the search window is always of size 64 x 64.
 
@@ -90,14 +96,15 @@ The code for the implementation of the sliding window approach is in code cell 8
 
 Below is an example output of using the sliding window approach on a series of test images:
 
+![enter image description here](https://github.com/ahany/vehicle-detection-and-tracking/blob/master/output_images/Test_images.png)
 
 The positions of positive detections in each frame are recorded. From the positive detections, a heatmap is created and then thresholded over several frames  to identify vehicle positions. I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap. Each blob corresponded to a vehicle. Finally bounding boxes are drawn to cover the area of each blob detected. Heatmaps are shown in the example above on the right-hand side of the images.
 
 Below is an example of an image after thresholding the heatmap:
 
+![enter image description here](https://github.com/ahany/vehicle-detection-and-tracking/blob/master/output_images/Heatmap.png)
 
-
-###**Video Implementation**
+### Video Implementation
 
 The function `processframe( )` in code cell 10 is used to process each frame in the video.
 
@@ -105,7 +112,11 @@ A running sum of the last several heatmaps was created and then thresholded to r
 
 The bounding boxes are validated to remove outliers by checking the width and height of each box and comparing to a threshold. This is implemented in function `draw_labeled_bboxes_thresholded( )`in Helper functions (code cell 2)
 
-Here's a link to my video result
+Here's a link to my video result: [project video](https://github.com/ahany/vehicle-detection-and-tracking/blob/master/project_video_processed.mp4)
 
 
-###**Reflection**
+### Reflection
+
+I believe the classifier has the strongest weight in this project. The classifier in my project is far better in classifying blue cars than white cars. I believe augmenting the dataset with more light colored cars or adding another dataset can help improve the performance of the classifier and increase its robustness. In such case, most of the post-processing will not be needed.
+
+I think using a Convolutional Neural Network would also give better results.
