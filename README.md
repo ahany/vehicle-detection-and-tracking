@@ -72,13 +72,13 @@ For the spatial and histogram features, choosing 32 as the size of the reduced i
 
 After experimenting with different parameters, the winning combination in terms of accuracy was:
 
-`Color_space = 'YCrCb' 
-Number of orientation bins (HOG): 10 
-HOG pixels per cell: 8
-HOG cells per block: 2 
-Channels to use: ALL
-Spatial binning dimensions: 32 x 32 
-Number of histogram bins: 32`
+`Color_space = 'YCrCb', 
+Number of orientation bins (HOG): 10, 
+HOG pixels per cell: 8, 
+HOG cells per block: 2,  
+Channels to use: ALL, 
+Spatial binning dimensions: 32 x 32, 
+Number of histogram bins: 32
 
 The above parameters yielded an accuracy of `0.9883` on the test dataset.
 
@@ -86,7 +86,7 @@ The classifier was trained in code cells 6 and 7 of the IPython notebook.
 
 ### Sliding Window Search
 
-I used a sliding window approach to search each frame. To optimize the feature extraction, hog features are extracted only once and then sub-sampled to get all of the overlaying windows. Each window is defined by a scaling factor where a scale of 1 would result in a window that's 8 x 8 cells. Instead of resizing the window for different window sizes, the whole frame image is scaled according the window scaling factor and and the search window is always of size 64 x 64.
+I used a sliding window approach to search each frame. To optimize the feature extraction, hog features are extracted only once and then sub-sampled to get all of the overlaying windows. Each window is defined by a scaling factor where a scale of 1 would result in a window that's 8 x 8 cells. Instead of resizing the window for different window sizes, the whole frame image is scaled according to the window scaling factor and the search window is always of size 64 x 64.
 
 I used 4 scaling factors of `1.25`, `1.5`, `2`and `3`  which corresponds to window sizes of `80 x 80` ,  `96 x 96`, `128 x 128` and `194 x 194` respectively which provided good results.
 
